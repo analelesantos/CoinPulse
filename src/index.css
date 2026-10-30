@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg: oklch(0.165 0.006 260);
+  --color-surface: oklch(0.205 0.007 260);
+  --color-raised: oklch(0.25 0.008 260);
+  --color-line: oklch(0.3 0.008 260);
+  --color-ink: oklch(0.97 0.003 260);
+  --color-muted: oklch(0.74 0.012 260);
+
+  --color-up: oklch(0.8 0.18 152);
+  --color-down: oklch(0.72 0.17 40);
+
+  /* A cor de destaque segue o resultado da carteira (ver data-tone no App) */
+  --color-accent: var(--color-up);
+
+  --animate-row-in: row-in 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-fade-in: fade-in 400ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  @keyframes row-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+[data-tone="down"] {
+  --color-accent: var(--color-down);
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-bg);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--color-accent) 35%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-color: var(--color-line) transparent;
+}
