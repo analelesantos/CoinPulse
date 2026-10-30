@@ -8,8 +8,9 @@ import { portfolioSummary } from './lib/money'
 import { sortPurchases } from './lib/purchases'
 import { useLivePrices } from './hooks/useLivePrices'
 import { useLocalStorage } from './hooks/useLocalStorage' 
-import { useState } from 'react'
-import { PriceChart } from './components/PriceChart'
+import { useState, useEffect } from 'react'
+import { PriceChart } from './components/PriceChart' 
+import { formatBRL } from './lib/format'
 
 export default function App() {
 const [purchases, setPurchases] = useLocalStorage('coinpulse:compras',[])
@@ -21,6 +22,13 @@ const summary = portfolioSummary(purchases, prices);
 const tone = summary.profit.lt(0) ? 'down' : 'up' 
 const cryptoDollar = prices[DOLLAR_PAIR]?.price 
 const coin = findCoin(selected)
+const total = formatBRL(summary.value.toFixed(2));
+
+useEffect(() => { 
+  document.title = purchases.length > 0 ? `${total} * CoinPulse ` : 'CoinPulse'
+
+
+},[total, purchases.length])
 
 function addPurchase(pruchase) {
   setPurchases([...purchases, pruchase])

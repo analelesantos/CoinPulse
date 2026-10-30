@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { COINS, DOLLAR_PAIR } from '../data/coins'
-import { tickerSocketUrl } from '../lib/binance'
-import { Coins } from "lucide-react";
+import { tickerSocketUrl, fetchTickers } from '../lib/binance'
 
 const PAIR = [...COINS.map((coin) => coin.pair), DOLLAR_PAIR];
 
@@ -10,6 +9,15 @@ export function useLivePrices(){
     const [status, setStatus] = useState('connecting')
 
     useEffect(() => {
+        let active = true
+
+        // foto inicial via REST, pra nenhuma moeda ficar sem preço
+        fetchTickers(PAIR)
+            .then((snapshot) => {
+                if (active) setPrices((current) => ({ ...snapshot, ...current }))
+            })
+            .catch(() => {})
+
         const socket = new WebSocket(tickerSocketUrl(PAIR));
 
         socket.onopen = () => setStatus('online')
@@ -17,8 +25,6 @@ export function useLivePrices(){
 
         socket.onmessage = (event) => {
             const { data } = JSON.parse(event.data);
-            //data.s (o par), data.c (último preço) e 
-            // data.o (preço de abertura das últimas 24 horas).
             setPrices((current) => ({
                 ...current,
                 [data.s]: { price: data.c, open: data.o },
@@ -26,6 +32,7 @@ export function useLivePrices(){
         }
 
         return () => {
+            active = false
             socket.onclose = null
             socket.close()
         }
