@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { COINS, DOLLAR_PAIR } from '../data/coins'
-import { ticketSocketUrl } from '../lib/binance'
+import { tickerSocketUrl } from '../lib/binance'
 import { Coins } from "lucide-react";
 
 const PAIR = [...COINS.map((coin) => coin.pair), DOLLAR_PAIR];
@@ -10,7 +10,7 @@ export function useLivePrices(){
     const [status, setStatus] = useState('connecting')
 
     useEffect(() => {
-        const socket = new WebSocket(ticketSocketUrl(PAIR));
+        const socket = new WebSocket(tickerSocketUrl(PAIR));
 
         socket.onopen = () => setStatus('online')
         socket.onclose = () => setStatus('offline')
